@@ -60,9 +60,14 @@ def main():
     views_over_time = selected_videos.groupby(selected_videos['published_date'].dt.date)['views'].sum()
 
     # Create the Matplotlib figure for video views
+    views_over_time.replace([np.inf, -np.inf], np.nan, inplace=True)
+
+    # Drop rows with NaN values
+    views_over_time.dropna(inplace=True)
+
+    # Create the Matplotlib figure for video views
     fig_views, ax_views = plt.subplots(figsize=(12, 6))
-    views_over_time.replace([np.inf, -np.inf], np.nan, inplace=True)  # Convert infinity to NaN
-    sns.lineplot(data=views_over_time.dropna(), linewidth=2, color='orange', ax=ax_views)  # Drop NaN values
+    sns.lineplot(data=views_over_time, linewidth=2, color='orange', ax=ax_views)
     ax_views.set_xlabel('Date', fontsize=12)
     ax_views.set_ylabel('Views', fontsize=12)
     ax_views.set_title('Video Views Over Time', fontsize=14)
