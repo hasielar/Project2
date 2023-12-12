@@ -1,19 +1,19 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
-import gdown
+import requests
 
+csv_url = 'https://github.com/username/repo/releases/download/v1.0/large_file.csv'
 
-def main():
-    # Downloading channel data using gdown
-    channel_data_url = 'https://drive.google.com/file/d/1uwxpjZjsmKPdnEDEZkIyX-4f2fcNGmy4jrH47tjt7hQ/view' 
-    output_channel_data = 'channel_data.csv'
-    gdown.download(channel_data_url, output_channel_data, quiet=False, fuzzy=True)
+response = requests.get(csv_url)
 
-    # Downloading video data using gdown
-    video_data_url = 'https://drive.google.com/file/d/13iQVLNMlKie1N7fZTlklBeSrkDUOi5_TslgfVOdwKRc/view'  
-    output_video_data = 'video_data.csv'
-    gdown.download(video_data_url, output_video_data, quiet=False, fuzzy=True)
+if response.status_code == 200:
+    with open('large_file.csv', 'wb') as f:
+        f.write(response.content)
+        print('File downloaded successfully')
+else:
+    print('Failed to download the file')
+
 
     # Reading downloaded files using pandas
     channel_data = pd.read_csv(output_channel_data)
