@@ -1,24 +1,20 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
+import seaborn as sns
 import requests
 
-csv_url = 'https://github.com/hasielar/Project2/releases/download/a/Vid.Stat.csv'
+# Define the URLs for the CSV files
+channel_data_url = 'https://github.com/hasielar/Project2/raw/main/Chan.csv'
+video_data_url = 'https://github.com/hasielar/Project2/releases/download/a/Vid.Stat.csv'
 
-response = requests.get(csv_url)
+def load_data(url):
+    return pd.read_csv(url)
 
-if response.status_code == 200:
-    with open('large_file.csv', 'wb') as f:
-        f.write(response.content)
-        print('File downloaded successfully')
-else:
-    print('Failed to download the file')
+channel_data = load_data(channel_data_url)
+video_data = load_data(video_data_url)
 
-
-    # Reading downloaded files using pandas
-    channel_data = pd.read_csv(output_channel_data)
-    video_data = pd.read_csv(output_video_data)
-
+def main():
     st.set_page_config(page_title='Mongolian Youtubers Information', layout='wide')
     st.title('The best Mongolian Channel Statistics')
     st.write("Channel overview")
