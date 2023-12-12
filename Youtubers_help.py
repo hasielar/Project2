@@ -53,11 +53,7 @@ def main():
     top_10_views = selected_videos.nlargest(10, 'views')[['title', 'views', 'likes', 'engagement']]
     st.write(top_10_views)
 
-   \
 
-    # Handle infinite values in views_over_time
-    views_over_time = views_over_time.replace([np.inf, -np.inf], np.nan)
-    views_over_time = views_over_time.dropna()
 
     # Create the Matplotlib figure for video views
     fig_views, ax_views = plt.subplots(figsize=(12, 6))
