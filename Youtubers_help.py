@@ -17,11 +17,12 @@ video_data = load_data(video_data_url)
 def main():
     st.set_page_config(page_title='Mongolian Youtubers Information', layout='wide')
     st.title('The best Mongolian Channel Statistics')
-    # ... (rest of your code remains the same)
+    
 
     # Bar chart for video views over time for the selected channel
     st.header('Video Views Over Time')
-    st.write(f"Video views over time for **{selected_channel}**")
+    st.write("Video views over time for **{}**".format(selected_channel))  # Update this line
+
     selected_videos['published_date'] = pd.to_datetime(selected_videos['published_date'])
     views_over_time = selected_videos.groupby(selected_videos['published_date'].dt.date)['views'].sum()
 
@@ -39,7 +40,7 @@ def main():
 
     # Scatter plot for likes and engagement over time for the selected channel
     st.header('Likes and Engagement Over Time')
-    st.write(f"Likes and engagement over time for **{selected_channel}**")
+    st.write("Likes and engagement over time for **{}**".format(selected_channel))
     likes_over_time = selected_videos.groupby(selected_videos['published_date'].dt.date)['likes'].sum()
     engagement_over_time = selected_videos.groupby(selected_videos['published_date'].dt.date)['engagement'].sum()
 
