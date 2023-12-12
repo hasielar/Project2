@@ -3,6 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import requests
 import seaborn as sns
+import numpy as np
 
 
 # Define the URLs for the CSV files
