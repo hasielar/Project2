@@ -59,11 +59,9 @@ def main():
     selected_videos['published_date'] = pd.to_datetime(selected_videos['published_date'])
     views_over_time = selected_videos.groupby(selected_videos['published_date'].dt.date)['views'].sum()
 
-    # Create the Matplotlib figure for video views
-    views_over_time.replace([np.inf, -np.inf], np.nan, inplace=True)
-
-    # Drop rows with NaN values
-    views_over_time.dropna(inplace=True)
+    # Handle infinite values in views_over_time
+    views_over_time = views_over_time.replace([np.inf, -np.inf], np.nan)
+    views_over_time = views_over_time.dropna()
 
     # Create the Matplotlib figure for video views
     fig_views, ax_views = plt.subplots(figsize=(12, 6))
