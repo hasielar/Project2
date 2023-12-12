@@ -2,6 +2,8 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import requests
+import seaborn as sns
+
 
 # Define the URLs for the CSV files
 channel_data_url = 'https://github.com/hasielar/Project2/raw/main/Chan.csv'
