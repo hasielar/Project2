@@ -3,4 +3,4 @@ streamlit==1.0.0
 pandas==1.3.3
 requests==2.26.0
 matplotlib==3.4.3
-seaaborn
+seaborn==0.11.2
