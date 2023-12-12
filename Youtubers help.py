@@ -1,11 +1,23 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
+import gdown
 
 
 def main():
-    channel_data = pd.read_csv('chan.csv')
-    video_data = pd.read_csv('vid stat.csv')
+    # Downloading channel data using gdown
+    channel_data_url = 'https://drive.google.com/file/d/1uwxpjZjsmKPdnEDEZkIyX-4f2fcNGmy4jrH47tjt7hQ/view' 
+    output_channel_data = 'channel_data.csv'
+    gdown.download(channel_data_url, output_channel_data, quiet=False, fuzzy=True)
+
+    # Downloading video data using gdown
+    video_data_url = 'https://drive.google.com/file/d/13iQVLNMlKie1N7fZTlklBeSrkDUOi5_TslgfVOdwKRc/view'  
+    output_video_data = 'video_data.csv'
+    gdown.download(video_data_url, output_video_data, quiet=False, fuzzy=True)
+
+    # Reading downloaded files using pandas
+    channel_data = pd.read_csv(output_channel_data)
+    video_data = pd.read_csv(output_video_data)
 
     st.set_page_config(page_title='Mongolian Youtubers Information', layout='wide')
     st.title('The best Mongolian Channel Statistics')
