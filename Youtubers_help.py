@@ -2,7 +2,8 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import requests
-import numpy as np
+import seaborn as sns
+
 
 # Define the URLs for the CSV files
 channel_data_url = 'https://github.com/hasielar/Project2/raw/main/Chan.csv'
@@ -17,12 +18,44 @@ video_data = load_data(video_data_url)
 def main():
     st.set_page_config(page_title='Mongolian Youtubers Information', layout='wide')
     st.title('The best Mongolian Channel Statistics')
+    st.write("Channel overview")
+    st.write("This shows the YouTube channels with the region code 'MN'. Gathered from YouTube's API system")
+    st.write("This app finds channels title, description, duration, views, likes, favorites, and comment count")
     
+    st.header('Top 10 Channels with the Most Subscribers')
+    top_10_subscribers = channel_data.nlargest(10, 'subscribers')
+    top_10_subscribers = top_10_subscribers.reset_index(drop=True)
+    for index, row in top_10_subscribers.iterrows():
+        st.write(f"{index + 1}. {row['channel_name']} - Subscribers: {row['subscribers']}")
 
-    # Bar chart for video views over time for the selected channel
+    # Apply CSS to style the sidebar with Streamlit's primary color
+    st.markdown(
+        """
+        <style>
+        .sidebar .sidebar-content {
+            background-color: #f63366;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
+    st.sidebar.title('Pick a Channel to inspect')
+    selected_channel = st.sidebar.selectbox('Select Channel:', channel_data['channel_name'].unique())
+    selected_videos = video_data[video_data['channel_name'] == selected_channel]
+
+    st.header('Channel Status')
+    st.write(f"Statistics for the selected channel: **{selected_channel}**")
+    st.write(channel_data[channel_data['channel_name'] == selected_channel])
+
+    # Visualizations
+    st.header('Top 10 Videos with the Highest Views')
+    top_10_views = selected_videos.nlargest(10, 'views')[['title', 'views', 'likes', 'engagement']]
+    st.write(top_10_views)
+
+    # Line chart for video views over time for the selected channel
     st.header('Video Views Over Time')
-    st.write("Video views over time for **{}**".format(selected_channel))  # Update this line
-
+    st.write(f"Video views over time for **{selected_channel}**")
     selected_videos['published_date'] = pd.to_datetime(selected_videos['published_date'])
     views_over_time = selected_videos.groupby(selected_videos['published_date'].dt.date)['views'].sum()
 
@@ -30,35 +63,29 @@ def main():
     views_over_time = views_over_time.replace([np.inf, -np.inf], np.nan)
     views_over_time = views_over_time.dropna()
 
-    # Create the Matplotlib figure for video views using a bar plot
-    fig_views_bar, ax_views_bar = plt.subplots(figsize=(12, 6))
-    views_over_time.plot(kind='bar', ax=ax_views_bar, color='orange')
-    ax_views_bar.set_xlabel('Date', fontsize=12)
-    ax_views_bar.set_ylabel('Views', fontsize=12)
-    ax_views_bar.set_title('Video Views Over Time (Bar Plot)', fontsize=14)
-    st.pyplot(fig_views_bar)
+    # Create the Matplotlib figure for video views
+    fig_views, ax_views = plt.subplots(figsize=(12, 6))
+    sns.lineplot(data=views_over_time, linewidth=2, color='orange', ax=ax_views)
+    ax_views.set_xlabel('Date', fontsize=12)
+    ax_views.set_ylabel('Views', fontsize=12)
+    ax_views.set_title('Video Views Over Time', fontsize=14)
+    st.pyplot(fig_views)
 
-    # Scatter plot for likes and engagement over time for the selected channel
+    # Line chart for likes and engagement over time for the selected channel
     st.header('Likes and Engagement Over Time')
-    st.write("Likes and engagement over time for **{}**".format(selected_channel))
+    st.write(f"Likes and engagement over time for **{selected_channel}**")
     likes_over_time = selected_videos.groupby(selected_videos['published_date'].dt.date)['likes'].sum()
     engagement_over_time = selected_videos.groupby(selected_videos['published_date'].dt.date)['engagement'].sum()
 
-    # Handle infinite values in the data
-    likes_over_time = likes_over_time.replace([np.inf, -np.inf], np.nan)
-    engagement_over_time = engagement_over_time.replace([np.inf, -np.inf], np.nan)
-    likes_over_time = likes_over_time.dropna()
-    engagement_over_time = engagement_over_time.dropna()
-
-    # Create the Matplotlib figure for likes and engagement using a scatter plot
-    fig_likes_engagement_scatter, ax_likes_engagement_scatter = plt.subplots(figsize=(12, 6))
-    plt.scatter(likes_over_time.index, likes_over_time, label='Likes', color='blue')
-    plt.scatter(engagement_over_time.index, engagement_over_time, label='Engagement', color='green')
-    ax_likes_engagement_scatter.set_xlabel('Date', fontsize=12)
-    ax_likes_engagement_scatter.set_ylabel('Count', fontsize=12)
-    ax_likes_engagement_scatter.set_title('Likes and Engagement Over Time (Scatter Plot)', fontsize=14)
-    ax_likes_engagement_scatter.legend()
-    st.pyplot(fig_likes_engagement_scatter)
+    # Create the Matplotlib figure for likes and engagement
+    fig_likes_engagement, ax_likes_engagement = plt.subplots(figsize=(12, 6))
+    sns.lineplot(data=likes_over_time, linewidth=2, color='blue', label='Likes', ax=ax_likes_engagement)
+    sns.lineplot(data=engagement_over_time, linewidth=2, color='green', label='Engagement', ax=ax_likes_engagement)
+    ax_likes_engagement.set_xlabel('Date', fontsize=12)
+    ax_likes_engagement.set_ylabel('Count', fontsize=12)
+    ax_likes_engagement.set_title('Likes and Engagement Over Time', fontsize=14)
+    ax_likes_engagement.legend()
+    st.pyplot(fig_likes_engagement)
 
     st.header('Top 10 Videos with the Most Likes')
     top_10_likes = selected_videos.nlargest(10, 'likes')[['title', 'views', 'likes', 'engagement']]
