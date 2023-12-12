@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import requests
 
-csv_url = 'https://github.com/username/repo/releases/download/v1.0/large_file.csv'
+csv_url = 'https://github.com/hasielar/Project2/releases/download/a/Vid.Stat.csv'
 
 response = requests.get(csv_url)
 
